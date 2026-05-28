@@ -1,0 +1,221 @@
+* {
+
+  box-sizing: border-box;
+
+}
+
+body {
+
+  margin: 0;
+
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  background: #f1f5f9;
+
+  color: #172033;
+
+}
+
+button,
+
+input,
+
+select {
+
+  font-family: inherit;
+
+}
+
+button {
+
+  cursor: pointer;
+
+}
+
+table {
+
+  width: 100%;
+
+  border-collapse: collapse;
+
+}
+
+/* 기존 카드형/둥근 UI 제거용 */
+
+.primary-btn,
+
+.panel,
+
+.table-wrap,
+
+.form-panel,
+
+.approval-panel,
+
+.metric-line,
+
+.page-header,
+
+.topbar,
+
+.sidebar {
+
+  all: unset;
+
+}
+
+/* 로그인 */
+
+.login-page {
+
+  min-height: 100vh;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 2.5rem;
+
+  background: linear-gradient(135deg, #111827, #1d4ed8);
+
+}
+
+.login-panel {
+
+  width: 32.5rem;
+
+  background: white;
+
+  border: 1px solid #cbd5e1;
+
+  padding: 2.25rem;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 0.875rem;
+
+}
+
+.login-panel h1 {
+
+  font-size: 2.25rem;
+
+  font-weight: 600;
+
+  margin: 0;
+
+}
+
+.login-panel p {
+
+  font-size: 1.1875rem;
+
+  color: #667085;
+
+  margin: 0 0 0.625rem;
+
+}
+
+.login-panel label {
+
+  font-size: 1.125rem;
+
+  font-weight: 500;
+
+}
+
+.login-panel input,
+
+.login-panel select {
+
+  height: 3.625rem;
+
+  border: 1px solid #94a3b8;
+
+  padding: 0 1rem;
+
+  font-size: 1.1875rem;
+
+}
+
+.login-panel button {
+
+  min-height: 3.625rem;
+
+  border: 1px solid #1e3a8a;
+
+  background: #1e3a8a;
+
+  color: white;
+
+  font-size: 1.1875rem;
+
+  font-weight: 500;
+
+}
+
+/* 공통 */
+
+.danger {
+
+  color: #dc2626 !important;
+
+}
+
+.full {
+
+  width: 100%;
+
+}
+
+/* 구형 class가 남아있을 때 최소 대응 */
+
+.action-row {
+
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 0.75rem;
+
+  margin-bottom: 1.25rem;
+
+}
+
+.upload-box,
+
+.camera-preview,
+
+.signature-pad {
+
+  border: 2px dashed #94a3b8;
+
+  background: #f8fafc;
+
+  min-height: 11.25rem;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-size: 1.375rem;
+
+  color: #64748b;
+
+}
+
+@media (max-width: 68.75rem) {
+
+  body {
+
+    min-width: 68.75rem;
+
+  }
+
+}

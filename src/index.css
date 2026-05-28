@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+@theme {
+  --font-size-xs:   1rem;
+  --font-size-sm:   1.125rem;
+  --font-size-base: 1.25rem;
+  --font-size-lg:   1.5rem;
+  --font-size-xl:   1.75rem;
+  --font-size-2xl:  2rem;
+  --font-size-3xl:  2.5rem;
+  --font-size-4xl:  3rem;
+  --font-size-5xl:  3.75rem;
+}
+
+/* 이걸 추가 - @theme보다 이게 더 확실해요 */
+html {
+  font-size: 18px !important;
+}
