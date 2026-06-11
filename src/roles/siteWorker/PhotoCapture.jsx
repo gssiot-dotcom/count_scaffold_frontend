@@ -60,7 +60,9 @@ export default function PhotoCapture() {
         } else if (list.length > 0 && !movementIdFromUrl) {
           setSelectedMovementId(String(list[0].id));
         }
-      } catch {}
+      } catch (err) {
+        setErrorMsg(err.message || "회차 목록을 불러오지 못했습니다.");
+      }
     };
     load();
   }, []);
@@ -398,8 +400,8 @@ export default function PhotoCapture() {
                 <div className="border-b border-slate-200 bg-white px-5 py-3">
                   <p className="text-[0.9375rem] text-slate-600">
                     <span className="font-semibold text-blue-800">AI 원 클릭</span> → 삭제 &nbsp;|&nbsp;
-                    <span className="font-semibold text-green-700">빈 곳 클릭</span> → 추가 &nbsp;|&nbsp;
-                    <span className="font-semibold text-green-700">초록 원 클릭</span> → 삭제
+                    <span className="font-semibold text-green-700">빈 곳 클릭</span> → 수동 추가 &nbsp;|&nbsp;
+                    <span className="font-semibold text-green-700">초록 원 클릭</span> → 수동 삭제
                   </p>
                 </div>
                 <div className="p-4">

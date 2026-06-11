@@ -1,8 +1,92 @@
 // src/roles/siteWorker/SiteReturn.jsx
 // 현장 반납 서명 페이지
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { api } from "../../api/api.js";
+
+function SignaturePad({ onSave, onClear }) {
+  const canvasRef = useRef(null);
+  const drawing = useRef(false);
+
+  const getPos = (e, canvas) => {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const src = e.touches ? e.touches[0] : e;
+    return {
+      x: (src.clientX - rect.left) * scaleX,
+      y: (src.clientY - rect.top) * scaleY,
+    };
+  };
+
+  const startDraw = (e) => {
+    e.preventDefault();
+    drawing.current = true;
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    const { x, y } = getPos(e, canvas);
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+  };
+
+  const draw = (e) => {
+    e.preventDefault();
+    if (!drawing.current) return;
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    const { x, y } = getPos(e, canvas);
+    ctx.lineTo(x, y);
+    ctx.strokeStyle = "#1e3a5f";
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.stroke();
+  };
+
+  const endDraw = (e) => {
+    e.preventDefault();
+    drawing.current = false;
+  };
+
+  const handleClear = () => {
+    canvasRef.current.getContext("2d").clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    onClear?.();
+  };
+
+  const handleSave = () => {
+    canvasRef.current.toBlob((blob) => {
+      if (blob) onSave(blob);
+    }, "image/png");
+  };
+
+  return (
+    <div>
+      <canvas
+        ref={canvasRef}
+        width={600}
+        height={200}
+        className="w-full cursor-crosshair border border-slate-400 bg-white"
+        onMouseDown={startDraw}
+        onMouseMove={draw}
+        onMouseUp={endDraw}
+        onMouseLeave={endDraw}
+        onTouchStart={startDraw}
+        onTouchMove={draw}
+        onTouchEnd={endDraw}
+      />
+      <div className="mt-3 flex gap-3">
+        <button type="button" onClick={handleClear}
+          className="border border-slate-300 bg-white px-5 py-2 text-[0.9375rem] font-medium text-slate-700 hover:bg-slate-50">
+          서명 초기화
+        </button>
+        <button type="button" onClick={handleSave}
+          className="border border-amber-600 bg-amber-600 px-5 py-2 text-[0.9375rem] font-medium text-white hover:bg-amber-700">
+          서명 확인
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function SiteReturn() {
   const [movements, setMovements] = useState([]);
@@ -10,7 +94,8 @@ export default function SiteReturn() {
   const [movement, setMovement] = useState(null);
   const [details, setDetails] = useState([]);
   const [photoFile, setPhotoFile] = useState(null);
-  const [signatureFile, setSignatureFile] = useState(null);
+  const [signatureBlob, setSignatureBlob] = useState(null);
+  const [signatureSaved, setSignatureSaved] = useState(false);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -76,13 +161,13 @@ export default function SiteReturn() {
 
   const handleSubmit = async () => {
     if (!movement) { alert("회차를 선택해주세요."); return; }
-    if (!signatureFile) { alert("서명 파일을 첨부해주세요."); return; }
+    if (!signatureSaved || !signatureBlob) { alert("서명 후 '서명 확인' 버튼을 눌러주세요."); return; }
 
     try {
       setSubmitting(true);
       const formData = new FormData();
       if (photoFile) formData.append("photo", photoFile);
-      formData.append("signature", signatureFile);
+      formData.append("signature", signatureBlob, "signature.png");
       formData.append(
         "details",
         JSON.stringify(
@@ -96,7 +181,8 @@ export default function SiteReturn() {
       await api.siteReturnSign(movement.id, formData);
       alert("현장 반납 서명이 완료되었습니다.");
       setPhotoFile(null);
-      setSignatureFile(null);
+      setSignatureBlob(null);
+      setSignatureSaved(false);
       await loadMovements();
     } catch (err) {
       alert(err.message || "반납 서명에 실패했습니다.");
@@ -192,7 +278,24 @@ export default function SiteReturn() {
           {/* 사진 + 서명 */}
           <section className="mb-6 grid grid-cols-2 gap-6 max-lg:grid-cols-1">
             <FileBox title="사진" file={photoFile} setFile={setPhotoFile} />
-            <FileBox title="서명" required file={signatureFile} setFile={setSignatureFile} />
+            <section className="border border-slate-300 bg-white">
+              <div className="border-b border-slate-200 bg-slate-50 px-7 py-4">
+                <h2 className="text-[1.375rem] font-semibold text-slate-800">
+                  서명 <span className="ml-2 text-red-600">*</span>
+                </h2>
+              </div>
+              <div className="p-7">
+                {signatureSaved && (
+                  <div className="mb-4 border border-green-300 bg-green-50 px-4 py-3 text-[1rem] text-green-800">
+                    서명이 저장되었습니다.
+                  </div>
+                )}
+                <SignaturePad
+                  onSave={(blob) => { setSignatureBlob(blob); setSignatureSaved(true); }}
+                  onClear={() => { setSignatureBlob(null); setSignatureSaved(false); }}
+                />
+              </div>
+            </section>
           </section>
 
           {/* 제출 */}

@@ -542,7 +542,8 @@ export default function SiteReturnRequest() {
                         <div className="border-b border-slate-200 bg-white px-5 py-3">
                           <p className="text-[0.875rem] text-slate-600">
                             <span className="font-semibold text-amber-700">AI 원 클릭</span> → 삭제 &nbsp;|&nbsp;
-                            <span className="font-semibold text-green-700">빈 곳 클릭</span> → 추가
+                            <span className="font-semibold text-green-700">빈 곳 클릭</span> → 수동 추가 &nbsp;|&nbsp;
+                            <span className="font-semibold text-green-700">초록 원 클릭</span> → 수동 삭제
                           </p>
                         </div>
                         <div className="p-4">
